@@ -28,41 +28,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef GOOGLE_PROTOBUF_COMPILER_RUST_GENERATOR_H__
-#define GOOGLE_PROTOBUF_COMPILER_RUST_GENERATOR_H__
-
-#include <string>
-
-#include "google/protobuf/compiler/code_generator.h"
-
-// Must be included last.
-#include "google/protobuf/port_def.inc"
-
-namespace google {
-namespace protobuf {
-namespace compiler {
-namespace rust {
-
-class RustGenerator final : public google::protobuf::compiler::CodeGenerator {
- public:
-  RustGenerator() = default;
-  RustGenerator(const RustGenerator&) = delete;
-  RustGenerator& operator=(const RustGenerator&) = delete;
-  ~RustGenerator() override = default;
-
-  bool Generate(const FileDescriptor* file, const std::string& parameter,
-                GeneratorContext* generator_context,
-                std::string* error) const override;
-
-  uint64_t GetSupportedFeatures() const override {
-    return FEATURE_PROTO3_OPTIONAL;
-  }
-};
-
-}  // namespace rust
-}  // namespace compiler
-}  // namespace protobuf
-}  // namespace google
-
-#include "google/protobuf/port_undef.inc"
-#endif  // GOOGLE_PROTOBUF_COMPILER_RUST_GENERATOR_H__
+fn main() {
+    let _hello = hello_world_proto::Hello {};
+    let _world = hello_world_proto::World {};
+}
