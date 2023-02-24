@@ -99,6 +99,7 @@ public class DescriptorsTest {
     FileDescriptor file = UnittestProto.getDescriptor();
 
     assertThat(file.getName()).isEqualTo("google/protobuf/unittest.proto");
+    assertThat(file.getSyntax()).isEqualTo(Descriptors.FileDescriptor.Syntax.PROTO2);
     assertThat(file.getPackage()).isEqualTo("protobuf_unittest");
     assertThat(file.getOptions().getJavaOuterClassname()).isEqualTo("UnittestProto");
     assertThat(file.toProto().getName()).isEqualTo("google/protobuf/unittest.proto");
