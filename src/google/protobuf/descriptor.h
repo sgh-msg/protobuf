@@ -72,6 +72,7 @@
 #include "absl/strings/string_view.h"
 #include "absl/synchronization/mutex.h"
 #include "absl/types/optional.h"
+#include "google/protobuf/extension_declaration.h"
 #include "google/protobuf/port.h"
 
 // Must be included last.
@@ -118,7 +119,6 @@ class MethodOptions;
 class FileOptions;
 class UninterpretedOption;
 class SourceCodeInfo;
-class ExtensionMetadata;
 
 // Defined in message.h
 class Message;

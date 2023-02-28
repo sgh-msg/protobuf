@@ -378,6 +378,19 @@ cc_library(
 )
 
 cc_library(
+    name = "extension_declaration",
+    hdrs = ["extension_declaration.h"],
+    copts = COPTS,
+    include_prefix = "google/protobuf",
+    linkopts = LINK_OPTS,
+    visibility = [
+        "//pkg:__pkg__",
+        "//src/google/protobuf:__subpackages__",
+    ],
+    deps = ["@com_google_absl//absl/strings:internal"],
+)
+
+cc_library(
     name = "protobuf_nowkt",
     srcs = [
         "any.cc",
@@ -431,6 +444,7 @@ cc_library(
         "//src/google/protobuf:__subpackages__",
     ],
     deps = [
+        ":extension_declaration",
         ":protobuf_lite",
         "//src/google/protobuf/io",
         "//src/google/protobuf/io:gzip_stream",

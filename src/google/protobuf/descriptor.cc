@@ -72,6 +72,7 @@
 #include "google/protobuf/descriptor.pb.h"
 #include "google/protobuf/descriptor_database.h"
 #include "google/protobuf/dynamic_message.h"
+#include "google/protobuf/extension_declaration.h"
 #include "google/protobuf/generated_message_util.h"
 #include "google/protobuf/io/strtod.h"
 #include "google/protobuf/io/tokenizer.h"
