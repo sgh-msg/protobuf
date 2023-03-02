@@ -1367,51 +1367,71 @@ void ParseFunctionGenerator::GenerateFieldBody(
   switch (wiretype) {
     case WireFormatLite::WIRETYPE_VARINT: {
       std::string type = PrimitiveTypeName(options_, field->cpp_type());
-      if (field->type() == FieldDescriptor::TYPE_ENUM) {
-        format.Set("enum_type",
-                   QualifiedClassName(field->enum_type(), options_));
-        format(
-            "$uint64$ val = ::$proto_ns$::internal::ReadVarint64(&ptr);\n"
-            "CHK_(ptr);\n");
-        if (!HasPreservingUnknownEnumSemantics(field)) {
-          format("if (PROTOBUF_PREDICT_TRUE($enum_type$_IsValid(val))) {\n");
-          format.Indent();
-        }
-        format("$msg$_internal_$put_field$(static_cast<$enum_type$>(val));\n");
-        if (!HasPreservingUnknownEnumSemantics(field)) {
-          format.Outdent();
+      switch (field->type()) {
+        case FieldDescriptor::TYPE_ENUM: {
+          format.Set("enum_type",
+                     QualifiedClassName(field->enum_type(), options_));
           format(
-              "} else {\n"
-              "  ::$proto_ns$::internal::WriteVarint("
-              "$1$, val, $msg$mutable_unknown_fields());\n"
-              "}\n",
-              field->number());
-        }
-      } else {
-        std::string size = (field->type() == FieldDescriptor::TYPE_INT32 ||
-                            field->type() == FieldDescriptor::TYPE_SINT32 ||
-                            field->type() == FieldDescriptor::TYPE_UINT32)
-                               ? "32"
-                               : "64";
-        std::string zigzag;
-        if ((field->type() == FieldDescriptor::TYPE_SINT32 ||
-             field->type() == FieldDescriptor::TYPE_SINT64)) {
-          zigzag = "ZigZag";
-        }
-        if (field->is_repeated() || field->real_containing_oneof()) {
-          format(
-              "$msg$_internal_$put_field$("
-              "::$proto_ns$::internal::ReadVarint$1$$2$(&ptr));\n"
-              "CHK_(ptr);\n",
-              zigzag, size);
-        } else {
-          if (HasHasbit(field)) {
-            format("_Internal::set_has_$name$(&$has_bits$);\n");
+              "$uint64$ val = ::$proto_ns$::internal::ReadVarint64(&ptr);\n"
+              "CHK_(ptr);\n");
+          if (!HasPreservingUnknownEnumSemantics(field)) {
+            format("if (PROTOBUF_PREDICT_TRUE($enum_type$_IsValid(val))) {\n");
+            format.Indent();
           }
+          format("$msg$_internal_$put_field$(static_cast<$enum_type$>(val));\n");
+          if (!HasPreservingUnknownEnumSemantics(field)) {
+            format.Outdent();
+            format(
+                "} else {\n"
+                "  ::$proto_ns$::internal::WriteVarint("
+                "$1$, val, $msg$mutable_unknown_fields());\n"
+                "}\n",
+                field->number());
+          }
+          break;
+        }
+        case FieldDescriptor::TYPE_BOOL: {
           format(
-              "$msg$$field$ = ::$proto_ns$::internal::ReadVarint$1$$2$(&ptr);\n"
-              "CHK_(ptr);\n",
-              zigzag, size);
+              "$uint64$ val = ::$proto_ns$::internal::ReadVarint64(&ptr);\n"
+              "CHK_(ptr);\n");
+          if (field->is_repeated() || field->real_containing_oneof()) {
+            format(
+                "$msg$_internal_$put_field$(static_cast<bool>(val));\n");
+          } else {
+            if (HasHasbit(field)) {
+              format("_Internal::set_has_$name$(&$has_bits$);\n");
+            }
+            format(
+                "$msg$$field$ = static_cast<bool>(val);\n");
+          }
+          break;
+        }
+        default: {
+          std::string size = (field->type() == FieldDescriptor::TYPE_INT32 ||
+                              field->type() == FieldDescriptor::TYPE_SINT32 ||
+                              field->type() == FieldDescriptor::TYPE_UINT32)
+                                 ? "32"
+                                 : "64";
+          std::string zigzag;
+          if ((field->type() == FieldDescriptor::TYPE_SINT32 ||
+               field->type() == FieldDescriptor::TYPE_SINT64)) {
+            zigzag = "ZigZag";
+          }
+          if (field->is_repeated() || field->real_containing_oneof()) {
+            format(
+                "$msg$_internal_$put_field$("
+                "::$proto_ns$::internal::ReadVarint$1$$2$(&ptr));\n"
+                "CHK_(ptr);\n",
+                zigzag, size);
+          } else {
+            if (HasHasbit(field)) {
+              format("_Internal::set_has_$name$(&$has_bits$);\n");
+            }
+            format(
+                "$msg$$field$ = ::$proto_ns$::internal::ReadVarint$1$$2$(&ptr);\n"
+                "CHK_(ptr);\n",
+                zigzag, size);
+          }
         }
       }
       break;
